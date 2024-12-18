@@ -5,6 +5,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from datetime import datetime, timedelta
 from sqlalchemy.dialects.sqlite import JSON
+from fastapi.middleware.cors import CORSMiddleware
 import hashlib
 import hmac
 import base64
@@ -12,6 +13,19 @@ import json
 import os
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:8000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 DATABASE_URL = "sqlite:///./knives.db"
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
