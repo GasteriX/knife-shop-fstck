@@ -16,12 +16,16 @@ interface PageHeaderProps { }
 
 const PageHeader: FC<PageHeaderProps> = () => {
    const [nickname, setNickname] = useState<string | null>(null);
+   const [isAdmin, setIsAdmin] = useState<boolean>(false);
    const navigate = useNavigate();
 
    useEffect(() => {
       const handleLoginUpdate = () => {
          const token = localStorage.getItem("token");
          setNickname(token);
+
+         const isAdmin = localStorage.getItem("is_admin") === "true";
+         setIsAdmin(isAdmin);
       };
 
       handleLoginUpdate();
@@ -31,6 +35,8 @@ const PageHeader: FC<PageHeaderProps> = () => {
 
    const handleLogOut = () => {
       localStorage.removeItem("token");
+      localStorage.removeItem('is_admin');
+      setIsAdmin(false);
       setNickname(null);
       navigate('/');
    };
@@ -51,7 +57,7 @@ const PageHeader: FC<PageHeaderProps> = () => {
                      {!nickname && (
                         <Nav.Link as={Link} to="/Login" style={{ paddingRight: "22px" }}><FontAwesomeIcon icon={faRightToBracket} /> Log in</Nav.Link>
                      )}
-                     {nickname && (
+                     {isAdmin && (
                         <Nav.Link as={Link} to="/Edit" style={{ paddingRight: "22px" }}><FontAwesomeIcon icon={faPenToSquare} /> Edit knifes</Nav.Link>
                      )}
                   </Nav>

@@ -6,7 +6,9 @@ import reportWebVitals from './reportWebVitals';
 
 import App from "./components/App/App.tsx";
 
-import KnifesPage from './components/pages/KnifesPage/KnifesPage.tsx';
+import MainPage from './components/pages/MainPage/MainPage.tsx';
+import KnifesPage from './components/pages/KnivesPage/KnivesPage.tsx';
+import KnifeByArticlePage from './components/pages/KnifeByArticlePage/KnifeByArticlePage.tsx';
 import LoginPage from './components/pages/LoginPage/LoginPage.tsx';
 import RegisterPage from './components/pages/RegisterPage/RegisterPage.tsx';
 
@@ -16,7 +18,8 @@ root.render(
     <Router>
       <App>
         <Routes>
-          <Route path="/" element={<div></div>} />
+          <Route path="/" element={<MainPage></MainPage>} />
+          <Route path="/Knife/:id" element={<KnifeByArticlePage></KnifeByArticlePage>} />
           <Route path="/Edit" element={<KnifesPage></KnifesPage>} />
           <Route path="/Login" element={<LoginPage></LoginPage>} />
           <Route path="/Register" element={<RegisterPage></RegisterPage>} />

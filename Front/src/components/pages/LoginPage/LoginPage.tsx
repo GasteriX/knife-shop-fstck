@@ -25,15 +25,16 @@ const LoginPage: FC<LoginPageProps> = () => {
       e.preventDefault();
 
       try {
-         const response = await axios.post(`${apiUrl}/token`, {
+         const response = await axios.post('/token', new URLSearchParams({
             username: username,
             password: password
+         }), {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
          });
 
-         const token = response.data.access_token;
-         if (token) {
-            localStorage.setItem("token", token);
-         }
+         const { access_token, is_admin } = response.data;
+         localStorage.setItem('token', access_token);
+         localStorage.setItem('is_admin', is_admin);
 
          setUsername("");
          setPassword("");

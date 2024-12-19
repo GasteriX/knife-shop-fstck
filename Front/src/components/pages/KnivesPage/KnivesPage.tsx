@@ -1,20 +1,19 @@
 import React, { FC, useState, useEffect } from 'react';
 import {
    ButtonsContainer,
-   KnifesHeaderContainer,
-   KnifesSortContainer
-} from './KnifesPage.ts';
+   KnivesHeaderContainer,
+   KnivesSortContainer
+} from './KnivesPage.ts';
 import {
    PageWrapper,
    PageContainer
 } from '../Page.styled.ts';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowsRotate, faPlus, faCheck, faXmark } from '@fortawesome/free-solid-svg-icons'
 
-import { Table, Button, Spinner, Dropdown, DropdownButton, Form } from 'react-bootstrap';
+import { Table, Button, Spinner,  Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import KnifeModal from '../../modals/KnifeModal/KnifeModal.tsx';
@@ -22,9 +21,7 @@ import AddKnifeModal from '../../modals/AddKnifeModal/AddKnifeModal.tsx';
 
 import { apiUrl } from '../../config.ts';
 
-import knifesData from '../../knifes.json';
-
-interface KnifesPageProps { }
+interface KnivesPageProps { }
 
 type Knife = {
    id: number;
@@ -37,8 +34,8 @@ type Knife = {
    description: string;
 };
 
-const KnifesPage: FC<KnifesPageProps> = () => {
-   const [knifes, setKnifes] = useState<Knife[]>([]);
+const KnivesPage: FC<KnivesPageProps> = () => {
+   const [knives, setKnives] = useState<Knife[]>([]);
    const [selectedKnife, setSelectedKnife] = useState(null);
 
    const [filter, setFilter] = useState("");
@@ -48,38 +45,31 @@ const KnifesPage: FC<KnifesPageProps> = () => {
    const [showEditModal, setShowEditModal] = useState(false);
    const [showAddModal, setShowAddModal] = useState(false);
 
-   const navigate = useNavigate();
-
-   const fetchKnifes = async () => {
-      //setLoading(true);
-
-      setKnifes(knifesData);
-
-      console.log(knifesData);
-      return;
-
+   const fetchKnives = async () => {
+      setLoading(true);
+      
       try {
          const token = localStorage.getItem("token");
-         const response = await axios.get<Knife[]>(`${apiUrl}/all_knifes/`, {
+         const response = await axios.get<Knife[]>(`${apiUrl}/all_knives/`, {
             headers: {
                "Authorization": `Bearer ${token}`
             }
          });
 
-         setKnifes(response.data);
+         setKnives(response.data);
       } catch (error) {
-         console.error('Error fetching knifes:', error);
+         console.error('Error fetching knives:', error);
       } finally {
          setLoading(false);
       }
    };
 
    useEffect(() => {
-      fetchKnifes();
+      fetchKnives();
    }, []);
 
    const updateKnifeList = () => {
-      fetchKnifes();
+      fetchKnives();
    };
 
    const handleRowClick = (knife) => {
@@ -104,7 +94,7 @@ const KnifesPage: FC<KnifesPageProps> = () => {
       setFilter(e.target.value);
    };
 
-   const sortedAndFilteredKnifes = knifes
+   const sortedAndFilteredKnives = knives
       .filter((knife) => {
          const lowerCaseFilter = filter.toLowerCase();
          return knife.name.toLowerCase().includes(lowerCaseFilter);
@@ -114,8 +104,8 @@ const KnifesPage: FC<KnifesPageProps> = () => {
    return (
       <PageWrapper>
          <PageContainer>
-            <KnifesHeaderContainer>
-               <KnifesSortContainer>
+            <KnivesHeaderContainer>
+               <KnivesSortContainer>
                   <Form.Group>
                      <Form.Control
                         type="text"
@@ -125,12 +115,12 @@ const KnifesPage: FC<KnifesPageProps> = () => {
                         style={{ maxWidth: '300px' }}
                      />
                   </Form.Group>
-               </KnifesSortContainer>
+               </KnivesSortContainer>
                <ButtonsContainer>
                   <Button variant="success" onClick={handleAddModal} style={{ marginRight: "12px" }}><FontAwesomeIcon icon={faPlus} /></Button>
-                  <Button variant="dark" onClick={fetchKnifes}><FontAwesomeIcon icon={faArrowsRotate} /></Button>
+                  <Button variant="dark" onClick={fetchKnives}><FontAwesomeIcon icon={faArrowsRotate} /></Button>
                </ButtonsContainer>
-            </KnifesHeaderContainer>
+            </KnivesHeaderContainer>
             {loading ? (
                <div className="d-flex justify-content-center align-items-center" style={{ height: "400px" }}>
                   <Spinner animation="border" style={{ color: "white" }} />
@@ -155,7 +145,7 @@ const KnifesPage: FC<KnifesPageProps> = () => {
                      </tr>
                   </thead>
                   <tbody>
-                     {sortedAndFilteredKnifes.map((knife) => (
+                     {sortedAndFilteredKnives.map((knife) => (
                         <tr
                            key={knife.id}
                            onClick={() => handleRowClick(knife)}
@@ -196,4 +186,4 @@ const KnifesPage: FC<KnifesPageProps> = () => {
    );
 };
 
-export default KnifesPage;
+export default KnivesPage;
