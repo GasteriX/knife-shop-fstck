@@ -4,6 +4,8 @@ from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from datetime import datetime, timedelta
+from sqlalchemy.dialects.sqlite import JSON
+from fastapi.middleware.cors import CORSMiddleware
 import hashlib
 import hmac
 import base64
@@ -11,6 +13,19 @@ import json
 import os
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:8000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 DATABASE_URL = "sqlite:///./knives.db"
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
@@ -26,7 +41,7 @@ class Knife(Base):
     price = Column(Float)
     status = Column(Boolean, default=True)
     description = Column(String)
-    photo = Column(String, nullable=True)
+    photos = Column(JSON, nullable=True)
 
 class User(Base):
     __tablename__ = "users"
@@ -97,7 +112,7 @@ def register_user(
     new_user = User(username=username, hashed_password=hashed_password, is_admin=is_admin)
     db.add(new_user)
     db.commit()
-    return {"message": "User created successfully"}
+    return {"message": "User registered"}
 
 @app.post("/token", summary="Получение токена")
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
@@ -112,7 +127,37 @@ UPLOAD_FOLDER = "uploads"
 @app.get("/all_knives/", summary="Получить список ножей")
 def get_knives(db: Session = Depends(get_db)):
     knives = db.query(Knife).all()
-    return {"knives": knives}
+    return {
+        "knives": [
+            {
+                "id": knife.id,
+                "name": knife.name,
+                "manufacturer": knife.manufacturer,
+                "article": knife.article,
+                "price": knife.price,
+                "status": knife.status,
+                "description": knife.description,
+                "photos": knife.photos,
+            }
+            for knife in knives
+        ]
+    }
+
+@app.get("/knives_by_article", summary="Получить нож по артиклю")
+def knives_by_article(article: str, db: Session = Depends(get_db)):
+    knife = db.query(Knife).filter(Knife.article == article).first()
+    if not knife:
+        raise HTTPException(status_code=404, detail="Knife not found")
+    return{
+        "id": knife.id,
+        "name": knife.name,
+        "manufacturer": knife.manufacturer,
+        "article": knife.article,
+        "price": knife.price,
+        "status": knife.status,
+        "description": knife.description,
+        "photos": knife.photos,
+    }
 @app.post("/add_knives/", summary="Добавить нож (только для админa)")
 def add_knife(
     name: str = Form(),
@@ -121,16 +166,21 @@ def add_knife(
     price: float = Form(),
     status: bool = Form(True),
     description: str = Form(),
-    photo: UploadFile = File(None),
+    photos: list[UploadFile] = File([]),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_admin_user)
 ):
-    photo_path = None
-    if photo:
+    if len(photos) > 3:
+        raise HTTPException(status_code=400, detail="You can upload only 3 photos")
+
+    photo_paths = []
+    if photos:
         os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-        photo_path = os.path.join(UPLOAD_FOLDER, photo.filename)
-        with open(photo_path, "wb") as f:
-            f.write(photo.file.read())
+        for photo in photos:
+            photo_path = os.path.join(UPLOAD_FOLDER, photo.filename)
+            with open(photo_path, "wb") as f:
+                f.write(photo.file.read())
+            photo_paths.append(photo_path)
 
     knife = Knife(
         name=name,
@@ -139,41 +189,54 @@ def add_knife(
         price=price,
         status=status,
         description=description,
-        photo=photo_path
+        photos=photo_paths
     )
     db.add(knife)
     db.commit()
     db.refresh(knife)
-    return {"message": "Knife added successfully", "knife": knife}
+    return {"message": "Knife added", "knife": knife}
+
 @app.put("/edit_knives/{knife_id}", summary="Обновить нож (только для админa)")
 def update_knife(
-    knife_id: int,
-    name: str = Form(None),
-    manufacturer: str = Form(None),
-    price: float = Form(None),
-    description: str = Form(None),
-    photo: UploadFile = File(None),
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_admin_user)
+        knife_id: int,
+        name: str = Form(None),
+        manufacturer: str = Form(None),
+        price: float = Form(None),
+        description: str = Form(None),
+        photos: list[UploadFile] = File([]),
+        db: Session = Depends(get_db),
+        current_user: User = Depends(get_admin_user)
 ):
+    if len(photos) > 3:
+        raise HTTPException(status_code=400, detail="You can upload only 3 photos")
+
     knife = db.query(Knife).filter(Knife.id == knife_id).first()
     if not knife:
         raise HTTPException(status_code=404, detail="Knife not found")
+
     if name: knife.name = name
     if manufacturer: knife.manufacturer = manufacturer
     if price: knife.price = price
     if description: knife.description = description
 
-    if photo:
+    if knife.photos:
+        for old_photo in knife.photos:
+            if os.path.exists(old_photo):
+                os.remove(old_photo)
+
+    if photos:
         os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-        photo_path = os.path.join(UPLOAD_FOLDER, photo.filename)
-        with open(photo_path, "wb") as f:
-            f.write(photo.file.read())
-        knife.photo = photo_path
+        photo_paths = []
+        for photo in photos:
+            photo_path = os.path.join(UPLOAD_FOLDER, photo.filename)
+            with open(photo_path, "wb") as f:
+                f.write(photo.file.read())
+            photo_paths.append(photo_path)
+        knife.photos = photo_paths
 
     db.commit()
     db.refresh(knife)
-    return {"message": "Knife updated successfully", "knife": knife}
+    return {"message": "Knife updated", "knife": knife}
 
 @app.delete("/delete_knives/{knife_id}", summary="Удалить нож (только для админa)")
 def delete_knife(
@@ -186,4 +249,4 @@ def delete_knife(
         raise HTTPException(status_code=404, detail="Knife not found")
     db.delete(knife)
     db.commit()
-    return {"message": "Knife deleted successfully"}
+    return {"message": "Knife deleted"}
