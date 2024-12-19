@@ -119,7 +119,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     user = get_user_by_username(db, form_data.username)
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
-    token = create_jwt_token({"user": user.username, "is_admin": user.is_admin}, timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    token = create_jwt_token({"sub": user.username, "is_admin": user.is_admin}, timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
     return {"access_token": token, "token_type": "bearer"}
 
 UPLOAD_FOLDER = "uploads"
