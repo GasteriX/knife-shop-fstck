@@ -1,0 +1,83 @@
+[
+  {
+    "id": 1,
+    "name": "Benchmade 940",
+    "manufacturer": "Benchmade",
+    "article": "BM-940",
+    "photos": [
+      "https://killa.com.ua/image/cache/catalog/image/cache/catalog/import_new/ganzo-noj-skladnoy-g611-black/21975.0.large-800x800.webp",
+      "https://killa.com.ua/image/cache/catalog/import_new/ganzo-noj-skladnoy-g611-black/377ff9734e3fb1f565c3f01916f10b33-800x800.jpg"
+    ],
+    "price": 210.99,
+    "status": true,
+    "description": "A lightweight and versatile folding knife, ideal for everyday carry."
+  },
+  {
+    "id": 2,
+    "name": "Spyderco Paramilitary 2",
+    "manufacturer": "Spyderco",
+    "article": "SPY-PM2",
+    "photos": [
+      "https://killa.com.ua/image/cache/catalog/image/cache/catalog/import_new/ganzo-noj-skladnoy-g611-green/26298_0-800x800.webp",
+      "https://killa.com.ua/image/cache/catalog/import_new/ganzo-noj-skladnoy-g611-green/dc9774cb530d3c08a515b873653481b4-800x800.jpg"
+    ],
+    "price": 165.50,
+    "status": false,
+    "description": "The Spyderco Paramilitary 2 features a durable G-10 handle and a premium steel blade."
+  },
+  {
+    "id": 3,
+    "name": "Cold Steel 4MAX",
+    "manufacturer": "Cold Steel",
+    "article": "CS-4MAX",
+    "photos": [
+      "https://killa.com.ua/image/cache/catalog/image/cache/catalog/import_new/ganzo-noj-skladnoy-g616/26302_0-800x800.webp",
+      "https://killa.com.ua/image/cache/catalog/import_new/ganzo-noj-skladnoy-g616/501b2fdfb75d20b8490e21af9d1e0652-800x800.jpg"
+    ],
+    "price": 299.99,
+    "status": true,
+    "description": "A robust folding knife with a wide blade and exceptional cutting power."
+  },
+  {
+    "id": 4,
+    "name": "Kershaw Leek",
+    "manufacturer": "Kershaw",
+    "article": "KS-1830",
+    "photos": [
+      "https://killa.com.ua/image/cache/catalog/image/cache/catalog/import_new/ganzo-noj-skladnoy-g620b-1-black/10134.900x0-800x800.webp",
+      "https://killa.com.ua/image/cache/catalog/import_new/ganzo-noj-skladnoy-g620b-1-black/034e0deedcb6552fea024a28b4c10408-800x800.jpg",
+      "https://killa.com.ua/image/cache/catalog/import_new/ganzo-noj-skladnoy-g620b-1-black/db38af31eeda19b0a99dd497013b8ee6-800x800.JPG"
+    ],
+    "price": 45.75,
+    "status": true,
+    "description": "An affordable yet reliable assisted opening knife, great for beginners."
+  },
+  {
+    "id": 5,
+    "name": "Gerber 06 Auto",
+    "manufacturer": "Gerber",
+    "article": "GBR-06AUTO",
+    "photos": [
+      "https://killa.com.ua/image/cache/catalog/image/cache/catalog/import_new/ganzo-noj-skladnoy-g626-samuray-grey/531162cd0c6c2a5de7668de16c4e61f4-800x800.webp",
+      "https://killa.com.ua/image/cache/catalog/import_new/ganzo-noj-skladnoy-g626-samuray-grey/7c37d7f80b57fb36dab827a022ba7415-800x800.jpg",
+      "https://killa.com.ua/image/cache/catalog/import_new/ganzo-noj-skladnoy-g626-samuray-grey/e814fb72c27313b5fb154c2086afa2b1-800x800.jpg"
+    ],
+    "price": 120.00,
+    "status": false,
+    "description": "An automatic folding knife with a black oxide coating for stealth and durability."
+  },
+  {
+    "id": 6,
+    "name": "CRKT M16",
+    "manufacturer": "CRKT",
+    "article": "CRKT-M16",
+    "photos": [
+      "https://killa.com.ua/image/cache/catalog/image/cache/catalog/import_new/grand-way-noj-karmannyy-wk-04018/abdf7f3b08108bdac5fa1bbc72e2bc1d-800x800.webp",
+      "https://killa.com.ua/image/cache/catalog/import_new/grand-way-noj-karmannyy-wk-04018/2ea462847e021f38e173a000e6508c40-800x800.jpg",
+      "https://killa.com.ua/image/cache/catalog/import_new/grand-way-noj-karmannyy-wk-04018/628abb19e6d73edc5f7fecb3f94f9e56-800x800.jpg"
+    ],
+    "price": 69.99,
+    "status": true,
+    "description": "A tactical folding knife with a signature flipper design and sturdy frame lock."
+  }
+]
